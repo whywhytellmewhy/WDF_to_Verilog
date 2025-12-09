@@ -1,0 +1,13 @@
+*.l
+*.fsdb
+*.vcd
+
+BSSLib.lib++/*
+csrc/*
+nWaveLog/*
+simv.daidir/*
+novas.conf
+novas.rc
+novas_dump.log
+simv
+ucli.key
