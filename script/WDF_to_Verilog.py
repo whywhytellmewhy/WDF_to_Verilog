@@ -1,7 +1,10 @@
-import numpy as np
+# import numpy as np
+import re
 from argparse import ArgumentParser
 
 output_testbench_filename = "test_pattern_generator.v"
+
+debug_mode = True
 
 
 #-------------- Initialize command-line argument parser --------------#
@@ -44,15 +47,54 @@ with open(args.input_WDF_filename, 'r') as f_WDF:
 if error:
     exit()
 
-# print(signal_name_list)
-# print(waveform_description_list)
+total_number_of_signals = len(signal_name_list)
+if debug_mode:
+    print("Total number of signals = " + str(total_number_of_signals))
+    print(signal_name_list)
+    print(waveform_description_list)
 
 print("[Info] Finish reading WDF (" + args.input_WDF_filename + ")")
 
 
+def recursive_stage_split(f_write, signal_name, waveform_description, input_iteration_level):
+    if (waveform_description[0] == '('):
+        ##### (Found a group) #####
+        split_group_list = waveform_description[1:].rsplit(')*', 1)
+        repeat_number = int(split_group_list[1])
+        
+        f_write.write("for(repeat_index_level_" + str(input_iteration_level) + "=0;repeat_index_level_" + str(input_iteration_level) + "<" + repeat_number + ";repeat_index_level_" + str(input_iteration_level) + "=repeat_index_level_" + str(input_iteration_level) + "-1) begin\n")
+        # recursive_stage_split(f_write, signal_name, waveform_description, input_iteration_level)
+        f_write.write("end\n")
+        
+        waveform_description = split_group_list[0]
+        
+    split_waveform_description_list = re.split(r'/(?!\(*[^()]*\))',waveform_description)
+    return output_iteration_level
+
+
 #-------------- Generate testbench --------------#
 print("[Info] Start generating testbench file (" + output_testbench_filename + ")")
-# with open(output_testbench_filename, 'w') as f_write:
-#     with open("./template/template_test_pattern_generator.v", 'r') as f_template:
-#         for line in f_template.readlines():
-            
+with open(output_testbench_filename, 'w') as f_write:
+    with open("./template/template_test_pattern_generator.v", 'r') as f_template:
+        for line in f_template.readlines():
+            if (line == "    // +++++ define parameter by WDF_to_Verilog.py +++++ //\n"):
+                f_write.write("    // ===== generated parameter by WDF_to_Verilog.py ===== //\n")
+                
+                f_write.write("    parameter Total_Number_of_Signals = " + str(total_number_of_signals) + "\n")
+            elif(line == "// +++++ define signals by WDF_to_Verilog.py +++++ //\n"):
+                f_write.write("// ===== generated signals by WDF_to_Verilog.py ===== //\n")
+                f_write.write("wire [Total_Number_of_Signals-1:0] signal_out;\n")
+                
+                for signal_index, signal_name in enumerate(signal_name_list):
+                    if debug_mode:
+                        print(str(signal_index)+". "+signal_name+" : "+waveform_description_list[signal_index])
+                    f_write.write("\n\n//----- " + str(signal_index) + ". " + signal_name + " -----//\n")
+                    f_write.write("reg " + signal_name + ";\n")
+                    f_write.write("\nassign signal_out[" + str(signal_index) + "] = " + signal_name + ";\n")
+                    iteration_level = recursive_stage_split(f_write, signal_name, waveform_description_list[signal_index], 1)
+                    print("[Info] Finish processing signal #" + str(signal_index) + " (" + signal_name + "): it has " + iteration_level + " level of simplification")
+                
+                f_write.write("// ================================================== //\n")
+            else:
+                f_write.write(line)
+                

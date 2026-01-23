@@ -55,7 +55,7 @@ initial begin
 	#(`SAMPLING_CLOCK_PERIOD * `MAX_ALLOWED_SAMPLE_NUMBER);
 	$display("\n=================================================================================");
 	$display("  Error!!! Simulation time is too long (The number of samples exceeded 'MAX_ALLOWED_SAMPLE_NUMBER')  ");
-	$display("  You can change the value in 'MAX_ALLOWED_SAMPLE_NUMBER' in hdl.f if needed.  ");
+	$display("  You can change the value of 'MAX_ALLOWED_SAMPLE_NUMBER' in hdl.f if needed.  ");
     $display("  Or perhaps there might be something wrong.  ");
  	$display("=================================================================================\n");
  	$finish;

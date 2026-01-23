@@ -11,3 +11,5 @@ novas.rc
 novas_dump.log
 simv
 ucli.key
+
+test_pattern_generator.v
