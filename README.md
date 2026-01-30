@@ -4,13 +4,19 @@ This repository is created on 2025.12.9.
 
 ## For the file `waveform_description.txt`
 撰寫時注意事項：
-- 以`<訊號名>:<waveform_description>`的格式撰寫，例如：
+- 非空白行的**第一行務必要填入「最終DWE的總 sample 數」**，例如若總sample數設計為「500000」，則填入：
+    ```
+    Total number of samples: 500000
+    ```
+    名稱務必要取作「`Total number of samples`」
+- 訊號的部分以`<訊號名>:<waveform_description>`的格式撰寫，例如：
     ```
     signal1:  L5/(H2/L5/H1/L3)*10/L20/H3/L5
     signal2:  H10/L50/H20
     signal3:  L100
     ```
-    注意：需為半形冒號（`:`）而**不能用全形冒號（`：`）**
+    - 注意：需為半形冒號（`:`）而**不能用全形冒號（`：`）**
+    - 注意：訊號名稱**不能含有空格**
 - 可以有空白行（python中會自動刪除）
 - 可以有空格（python中會自動刪除）
 - 可用井字號（`#`）作為註解，可為「單行註解」或「行末註解」，例如：
@@ -21,6 +27,14 @@ This repository is created on 2025.12.9.
     signal3:  L100 #此為行末註解
     ```
     註解中可以包含半形冒號（`:`），也可以包含空格
+<br/>
+
+## For the file `hdl.f`
+- 可在此檔案中修改`SAMPLING_CLOCK_PERIOD`的值，例如當設定
+    ```
+    +define+SAMPLING_CLOCK_PERIOD=5
+    ```
+    則代表「1個sample長度為5ns」
 <br/>
 
 ## Reference

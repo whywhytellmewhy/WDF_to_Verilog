@@ -44,25 +44,40 @@ with open(args.input_WDF_filename, 'r') as f_WDF:
             print("[Error] Cannot find ':' (" + args.input_WDF_filename + " Line " + str(line_counter) + ")")
             break
         
+if signal_name_list[0]=="Totalnumberofsamples":
+    try:
+        total_number_of_samples = int(waveform_description_list[0])
+    except ValueError as e:
+        error = True
+        print('[Error] The parameter "Total number of samples" is set as "' + waveform_description_list[0] + '", which is not an integer (in the file ' + args.input_WDF_filename + ')')
+else:
+    error = True
+    print('[Error] Cannot find "Total number of samples" in the first non-blank line in ' + args.input_WDF_filename)
+        
 if error:
     exit()
 
+print("[Info] Finish reading WDF (" + args.input_WDF_filename + ")")
+
+signal_name_list = signal_name_list[1:]
+waveform_description_list = waveform_description_list[1:]
+
 total_number_of_signals = len(signal_name_list)
+print("Total number of signals = " + str(total_number_of_signals))
+print("Total number of samples = " + str(total_number_of_samples))
 if debug_mode:
-    print("Total number of signals = " + str(total_number_of_signals))
     print(signal_name_list)
     print(waveform_description_list)
 
-print("[Info] Finish reading WDF (" + args.input_WDF_filename + ")")
 
-
+#-------------- Generate testbench --------------#
 def recursive_stage_split(f_write, signal_name, waveform_description, input_iteration_level):
     if (waveform_description[0] == '('):
         ##### (Found a group) #####
         split_group_list = waveform_description[1:].rsplit(')*', 1)
         repeat_number = int(split_group_list[1])
         
-        f_write.write("for(repeat_index_level_" + str(input_iteration_level) + "=0;repeat_index_level_" + str(input_iteration_level) + "<" + repeat_number + ";repeat_index_level_" + str(input_iteration_level) + "=repeat_index_level_" + str(input_iteration_level) + "-1) begin\n")
+        f_write.write("for(repeat_counter_signal_level_" + str(input_iteration_level) + "=0;repeat_index_level_" + str(input_iteration_level) + "<" + repeat_number + ";repeat_index_level_" + str(input_iteration_level) + "=repeat_index_level_" + str(input_iteration_level) + "-1) begin\n")
         # recursive_stage_split(f_write, signal_name, waveform_description, input_iteration_level)
         f_write.write("end\n")
         
@@ -71,8 +86,6 @@ def recursive_stage_split(f_write, signal_name, waveform_description, input_iter
     split_waveform_description_list = re.split(r'/(?!\(*[^()]*\))',waveform_description)
     return output_iteration_level
 
-
-#-------------- Generate testbench --------------#
 print("[Info] Start generating testbench file (" + output_testbench_filename + ")")
 with open(output_testbench_filename, 'w') as f_write:
     with open("./template/template_test_pattern_generator.v", 'r') as f_template:
@@ -81,6 +94,7 @@ with open(output_testbench_filename, 'w') as f_write:
                 f_write.write("    // ===== generated parameter by WDF_to_Verilog.py ===== //\n")
                 
                 f_write.write("    parameter Total_Number_of_Signals = " + str(total_number_of_signals) + "\n")
+                f_write.write("    parameter Total_Number_of_Samples = " + str(total_number_of_samples) + "\n")
             elif(line == "// +++++ define signals by WDF_to_Verilog.py +++++ //\n"):
                 f_write.write("// ===== generated signals by WDF_to_Verilog.py ===== //\n")
                 f_write.write("wire [Total_Number_of_Signals-1:0] signal_out;\n")

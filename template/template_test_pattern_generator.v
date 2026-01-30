@@ -1,15 +1,15 @@
 
 `timescale 1ns/1ps
 //`define CYCLE 10
-`define SAMPLING_CLOCK_PERIOD 5 // corresponding to "CYCLE = 10"
-`define MAX_ALLOWED_SAMPLE_NUMBER 3000000
+`define SAMPLING_CLOCK_PERIOD 5  // this parameter can be modified in "hdl.f"
+// `define MAX_ALLOWED_SAMPLE_NUMBER 3000000
 
 // `define USE_VCD_INSTEAD_OF_FSDB 1  // this would be defined in "run_sim.sh"
 
 
 
 module test_pattern_generator #(
-    // +++++ define parameter by WDF_to_Verilog.py +++++ //
+    // +++++ define parameters by WDF_to_Verilog.py +++++ //
 );
 
 // dump waveform
@@ -50,13 +50,12 @@ end
 // +++++ define signals by WDF_to_Verilog.py +++++ //
 
 
-// simulation too long
+// simulation for "Total_Number_of_Samples" samples
 initial begin
-	#(`SAMPLING_CLOCK_PERIOD * `MAX_ALLOWED_SAMPLE_NUMBER);
+	#(`SAMPLING_CLOCK_PERIOD * Total_Number_of_Samples);
 	$display("\n=================================================================================");
-	$display("  Error!!! Simulation time is too long (The number of samples exceeded 'MAX_ALLOWED_SAMPLE_NUMBER')  ");
-	$display("  You can change the value of 'MAX_ALLOWED_SAMPLE_NUMBER' in hdl.f if needed.  ");
-    $display("  Or perhaps there might be something wrong.  ");
+	$display("  Simulation finished !!  ");
+	$display("  You can check the VCD waveform using nWave.  ");
  	$display("=================================================================================\n");
  	$finish;
 end
