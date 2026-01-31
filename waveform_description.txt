@@ -6,3 +6,5 @@ signal1:  H5/(L2/H5/L1/H3)*10/H20/L3/H5 # Some note (end-of-line comment)
 
 
 Test_signal2:  H10/L50/H20  #Some note (end-of-line comment): this signal is for reference
+
+Test_signal4:  H5/(L2/(H5/L1)*4/H3)*10/H20/L3/H5

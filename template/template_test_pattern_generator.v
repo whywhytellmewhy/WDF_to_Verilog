@@ -4,7 +4,7 @@
 `define SAMPLING_CLOCK_PERIOD 5  // this parameter can be modified in "hdl.f"
 // `define MAX_ALLOWED_SAMPLE_NUMBER 3000000
 
-// `define USE_VCD_INSTEAD_OF_FSDB 1  // this would be defined in "run_sim.sh"
+// `define DUMP_VCD_FILE 1  // this would be defined in "run_sim.sh"
 
 
 
@@ -14,13 +14,12 @@ module test_pattern_generator #(
 
 // dump waveform
 initial begin
-    `ifdef USE_VCD_INSTEAD_OF_FSDB
+    `ifdef DUMP_VCD_FILE
         $dumpfile("test_pattern_generator.vcd");
         $dumpvars("+mda");
-    `else
-        $fsdbDumpfile("test_pattern_generator.fsdb");
-        $fsdbDumpvars("+mda");
     `endif
+    $fsdbDumpfile("test_pattern_generator.fsdb");
+    $fsdbDumpvars("+mda");
 end
 
 
