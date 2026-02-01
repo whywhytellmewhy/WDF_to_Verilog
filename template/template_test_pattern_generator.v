@@ -3,6 +3,7 @@
 //`define CYCLE 10
 `define SAMPLING_CLOCK_PERIOD 5  // this parameter can be modified in "hdl.f"
 // `define MAX_ALLOWED_SAMPLE_NUMBER 3000000
+`define CURRENT_SAMPLE_COUNTER_START_FROM 0  // this parameter can be modified in "hdl.f"
 
 // `define DUMP_VCD_FILE 1  // this would be defined in "run_sim.sh"
 
@@ -16,7 +17,8 @@ module test_pattern_generator #(
 initial begin
     `ifdef DUMP_VCD_FILE
         $dumpfile("test_pattern_generator.vcd");
-        $dumpvars("+mda");
+        // +++++ define signals to be dumped in VCD file by WDF_to_Verilog.py +++++ //
+        // $dumpvars("+mda");
     `endif
     $fsdbDumpfile("test_pattern_generator.fsdb");
     $fsdbDumpvars("+mda");
@@ -42,7 +44,15 @@ end*/
 reg sampling_clock;
 initial begin
     sampling_clock = 0;
-    while(1) #(`SAMPLING_CLOCK_PERIOD/2) sampling_clock = ~sampling_clock;
+    while(1) #(`SAMPLING_CLOCK_PERIOD * 0.5) sampling_clock = ~sampling_clock;
+end
+
+// create current sample counter
+integer current_sample_counter;
+initial begin
+    current_sample_counter = `CURRENT_SAMPLE_COUNTER_START_FROM;
+    // #(`SAMPLING_CLOCK_PERIOD * 0.01);  // in order NOT to aligned with sampling clock rising edge
+    while(1) #(`SAMPLING_CLOCK_PERIOD) current_sample_counter = current_sample_counter + 1;
 end
 
 
@@ -54,7 +64,8 @@ initial begin
 	#(`SAMPLING_CLOCK_PERIOD * Total_Number_of_Samples);
 	$display("\n=================================================================================");
 	$display("  Simulation finished !!  ");
-	$display("  You can check the VCD waveform using nWave.  ");
+	$display("  You can check the FSDB waveform using nWave.  ");
+    $display("  If all signals are as expected, then you can import the VCD file into DWE 3.0.  ");
  	$display("=================================================================================\n");
  	$finish;
 end

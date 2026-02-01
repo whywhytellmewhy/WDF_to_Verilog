@@ -35,6 +35,11 @@ This repository is created on 2025.12.9.
     +define+SAMPLING_CLOCK_PERIOD=5
     ```
     則代表「1個sample長度為5ns」
+- 可在此檔案中修改`CURRENT_SAMPLE_COUNTER_START_FROM`的值，例如當設定
+    ```
+    +define+CURRENT_SAMPLE_COUNTER_START_FROM=0
+    ```
+    則代表`current_sample_counter`這個訊號會從「0」開始數，數到「Total number of samples - 1」；當設定為`1`時則代表`current_sample_counter`這個訊號會從「1」開始數，數到「Total number of samples」。建議依照使用者喜好設定為「0」或「1」。
 <br/>
 
 ## Reference
