@@ -42,6 +42,25 @@ This repository is created on 2025.12.9.
     則代表`current_sample_counter`這個訊號會從「0」開始數，數到「Total number of samples - 1」；當設定為`1`時則代表`current_sample_counter`這個訊號會從「1」開始數，數到「Total number of samples」。建議依照使用者喜好設定為「0」或「1」。
 <br/>
 
+## How to run WDF_to_Verilog
+1. 將此 repository 的內容上傳至電機系工作站
+2. 撰寫 Waveform Description File (WDF) 檔
+3. 在terminal依序執行：
+    ```=1
+    cd WDF_to_Verilog
+    sh run_WDF_to_Verilog.sh <WDF>
+    sh run_sim.sh
+    ```
+    例如當Waveform Description File (WDF)檔名為`waveform_description.txt`，則：
+    ```=1
+    cd WDF_to_Verilog
+    sh run_WDF_to_Verilog.sh waveform_description.txt
+    sh run_sim.sh
+    ```
+    上述第2行是將WDF透過python轉換為Verilog testbench `test_pattern_generator.v`；第3行是將testbench執行RTL simulation得到VCD檔`test_pattern_generator.vcd`（另外也會產生FSDB檔`test_pattern_generator.fsdb`以供使用`nWave`查看波形）
+4. 將VCD檔（`test_pattern_generator.vcd`）匯入至DWE 3.0軟體
+<br/>
+
 ## Reference
 1. `/Handover/compiler_pat_gen/run_hdl_sim_gen.sh` from「CIS compiler 交接資料」from 呂老師實驗室
 2. `/Handover/compiler_pat_gen/hdl_sim_gen.py` from「CIS compiler 交接資料」from 呂老師實驗室
