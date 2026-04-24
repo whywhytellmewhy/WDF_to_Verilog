@@ -1,6 +1,7 @@
 # import numpy as np
 # import re
 from argparse import ArgumentParser
+from pathlib import Path
 
 output_testbench_filename = "test_pattern_generator.v"
 
@@ -19,6 +20,11 @@ parser.add_argument("input_WDF_filename", help="Please provide input WDF file na
 args = parser.parse_args()
 
 #print(args.input_WDF_filename)
+
+#-------------- Get the directory path of this file --------------#
+directory_of_this_file = Path(__file__).parent
+if debug_mode:
+    print("Directory of this file: "+str(directory_of_this_file))
 
 error = False
 signal_name_list = []
@@ -177,7 +183,7 @@ def recursive_stage_split(f_write, signal_name, waveform_description, input_iter
 
 print("[Info] Start generating testbench file (" + output_testbench_filename + ")")
 with open(output_testbench_filename, 'w') as f_write:
-    with open("./template/template_test_pattern_generator.v", 'r') as f_template:
+    with open(str(directory_of_this_file)+"/../template/template_test_pattern_generator.v", 'r') as f_template:
         for line in f_template.readlines():
             if (line == "    // +++++ define parameters by WDF_to_Verilog.py +++++ //\n"):
                 f_write.write("    // ===== generated parameters by WDF_to_Verilog.py ===== //\n")

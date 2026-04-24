@@ -1,4 +1,7 @@
 
+# Get the directory path of this file
+SCRIPT_DIR=$(dirname "$0")
+
 if [ $# -eq 0 ];
 then
   echo "Error: You should provide 1 input argument that specifies the name of the WDF file"
@@ -9,5 +12,5 @@ then
   echo "Error: Too many input arguments !!"
   exit 1
 else
-  python3 ./script/WDF_to_Verilog.py $1
+  python3 $SCRIPT_DIR/script/WDF_to_Verilog.py $1
 fi
