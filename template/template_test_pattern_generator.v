@@ -6,6 +6,7 @@
 `define CURRENT_SAMPLE_COUNTER_START_FROM 0  // this parameter can be modified in "hdl.f"
 
 // `define DUMP_VCD_FILE 1  // this would be defined in "run_sim.sh"
+// `define DUMP_FSDB_FILE 1  // this would be defined in "run_sim.sh"
 
 
 
@@ -20,8 +21,11 @@ initial begin
         // +++++ define signals to be dumped in VCD file by WDF_to_Verilog.py +++++ //
         // $dumpvars("+mda");
     `endif
-    $fsdbDumpfile("test_pattern_generator.fsdb");
-    $fsdbDumpvars("+mda");
+
+    `ifdef DUMP_FSDB_FILE
+        $fsdbDumpfile("test_pattern_generator.fsdb");
+        $fsdbDumpvars("+mda");
+    `endif
 end
 
 
