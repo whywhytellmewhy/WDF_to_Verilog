@@ -193,9 +193,15 @@ with open(output_testbench_filename, 'w') as f_write:
             elif(line == "        // +++++ define signals to be dumped in VCD file by WDF_to_Verilog.py +++++ //\n"):
                 f_write.write("        // ===== generated signals to be dumped in VCD file by WDF_to_Verilog.py ===== //\n")
                 
-                f_write.write("        $dumpvars(0, test_pattern_generator.sampling_clock);\n")
+                ##### (Method 1: specify absolute path (correct)) #####
+                # f_write.write("        $dumpvars(0, test_pattern_generator.sampling_clock);\n")
+                # for signal_name in signal_name_list:
+                #     f_write.write("        $dumpvars(0, test_pattern_generator." + signal_name + ");\n")
+                    
+                ##### (Method 2: use relative path (also correct)) #####
+                f_write.write("        $dumpvars(0, sampling_clock);\n")
                 for signal_name in signal_name_list:
-                    f_write.write("        $dumpvars(0, test_pattern_generator." + signal_name + ");\n")
+                    f_write.write("        $dumpvars(0, " + signal_name + ");\n")
             elif(line == "// +++++ define signals by WDF_to_Verilog.py +++++ //\n"):
                 f_write.write("// ===== generated signals by WDF_to_Verilog.py ===== //\n")
                 # f_write.write("wire [Total_Number_of_Signals-1:0] signal_out;\n")
